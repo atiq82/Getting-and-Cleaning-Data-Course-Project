@@ -2,7 +2,9 @@
 
 This document serves as the code book for the project. It provides essential information on how to access the source data, execute the R script, and understand the variables and transformations applied in the process.
 
-## How to Access the Data:
+The run_analysis.R script performs the data preparation and then followed by the 5 steps required as described in the course project’s definition.
+
+## Download the dataset
 
 1. **Download Data:**
    - Download the source data from the following link: [Human Activity Recognition Using Smartphones Data Set](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
@@ -16,34 +18,51 @@ This document serves as the code book for the project. It provides essential inf
 The source data for this project originates from the Human Activity Recognition Using Smartphones Data Set. A comprehensive description of the dataset can be found at the official site: [Human Activity Recognition Using Smartphones Data Set](http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones).
 Direct link to the data: [UCI HAR Dataset.zip](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
 
-## About the R Script:
+## Assign each data to variables
 
-The R script, "run_analysis.R," performs the following steps as per the assigned task of the coursework:
+features <- features.txt : 561 rows, 2 columns
+The features selected for this database come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ.
+activities <- activity_labels.txt : 6 rows, 2 columns
+List of activities performed when the corresponding measurements were taken and its codes (labels)
+subject_test <- test/subject_test.txt : 2947 rows, 1 column
+contains test data of 9/30 volunteer test subjects being observed
+x_test <- test/X_test.txt : 2947 rows, 561 columns
+contains recorded features test data
+y_test <- test/y_test.txt : 2947 rows, 1 columns
+contains test data of activities’code labels
+subject_train <- test/subject_train.txt : 7352 rows, 1 column
+contains train data of 21/30 volunteer subjects being observed
+x_train <- test/X_train.txt : 7352 rows, 561 columns
+contains recorded features train data
+y_train <- test/y_train.txt : 7352 rows, 1 columns
+contains train data of activities’code labels
 
-1. **Data Reading and Merging:**
-   - Reads the training and testing datasets along with feature vectors and activity labels.
-   - Assigns variable names.
-   - Merges all data into one dataset.
+## Merges the training and the test sets to create one data set
 
-2. **Extracting Relevant Measurements:**
-   - Selects only the measurements corresponding to mean and standard deviation for each feature.
+X (10299 rows, 561 columns) is created by merging x_train and x_test using rbind() function
+Y (10299 rows, 1 column) is created by merging y_train and y_test using rbind() function
+Subject (10299 rows, 1 column) is created by merging subject_train and subject_test using rbind() function
+Merged_Data (10299 rows, 563 column) is created by merging Subject, Y and X using cbind() function
 
-3. **Descriptive Activity Names:**
-   - Uses descriptive activity names to label the activities in the dataset.
+## Extracts only the measurements on the mean and standard deviation for each measurement
 
-4. **Descriptive Variable Names:**
-   - Appropriately labels the dataset with descriptive variable names.
+TidyData (10299 rows, 88 columns) is created by subsetting Merged_Data, selecting only columns: subject, code and the measurements on the mean and standard deviation (std) for each measurement
 
-5. **Creating Tidy Data Set:**
-   - Generates a second, independent tidy data set with the average of each variable for each activity and each subject.
-   - Writes the resulting tidy data set into a text file.
+## Uses descriptive activity names to name the activities in the data set
 
-**Note:** The code assumes that all data files are present in the same folder, uncompressed, and with their original names intact.
+Entire numbers in code column of the TidyData replaced with corresponding activity taken from second column of the activities variable
 
-## About Variables:
+## Appropriately labels the data set with descriptive variable names
 
-- `x_train`, `y_train`, `x_test`, `y_test`, `subject_train`, and `subject_test` contain data from the downloaded files.
-- `x_data`, `y_data`, and `subject_data` merge the above datasets for further analysis.
-- `features` contains the correct names for the `x_data` dataset, applied to the column names for detailed reference.
+code column in TidyData renamed into activities
+All Acc in column’s name replaced by Accelerometer
+All Gyro in column’s name replaced by Gyroscope
+All BodyBody in column’s name replaced by Body
+All Mag in column’s name replaced by Magnitude
+All start with character f in column’s name replaced by Frequency
+All start with character t in column’s name replaced by Time
 
-Feel free to refer to this document for a clear understanding of the project's data sources, processing steps, and variables used in the analysis.
+## From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject
+
+FinalData (180 rows, 88 columns) is created by sumarizing TidyData taking the means of each variable for each activity and each subject, after groupped by subject and activity.
+Export FinalData into FinalData.txt file.
